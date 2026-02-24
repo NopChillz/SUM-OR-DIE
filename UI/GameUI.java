@@ -37,6 +37,7 @@ public class GameUI extends JPanel implements TurnListener {
     private boolean isAnimating = false;
     private StatusOverlay playerStatusUI;// เพิ่มใหม่
     private StatusOverlay bossStatusUI;// เพิ่มใหม่
+    private Item pendingItem = null;
 
     // ===== UI =====
     private JButton[][] gridButtons = new JButton[5][5];
@@ -374,8 +375,7 @@ public class GameUI extends JPanel implements TurnListener {
 
     // ช่องไอเทม
     private void refreshInventory() {
-        selectedItem = null;
-        selectedSlot = null;
+
         inventoryPanel.removeAll();
         for (var item : player.getItemManager().getItems()) {
             Image scaled = item.getIcon().getImage().getScaledInstance(128, 128, Image.SCALE_SMOOTH);
@@ -418,8 +418,6 @@ public class GameUI extends JPanel implements TurnListener {
                     if(selectedItem == item){
 
                         // ---- DESELECT ----
-                        selectedItem = null;
-                        selectedSlot = null;
                         slot.setBorder(SLOT_BORDER);
 
                         GameLog.add("Item cancelled");
@@ -599,9 +597,7 @@ public class GameUI extends JPanel implements TurnListener {
             return;
         }
 
-        Collections.sort(selectedPoints, Comparator
-                .comparingInt((Point p) -> p.x)
-                .thenComparingInt(p -> p.y));
+        Collections.sort(selectedPoints, Comparator.comparingInt((Point p) -> p.x).thenComparingInt(p -> p.y));
 
         Point start = selectedPoints.get(0);
         Point end = selectedPoints.get(1);
@@ -619,11 +615,7 @@ public class GameUI extends JPanel implements TurnListener {
         List<Integer> numbers = boardModel.replaceNumbers(start.x, start.y, dir, selectedPoints.size());
         ComboResult combo = ComboAnalyzer.analyze(numbers);
         int damage = combo.getDamage();
-
-        List<Item> rewards =
-                questManager.checkQuestsAndCollect(numbers, player);
-        handleQuestRewards(rewards);
-
+        List<Item> pendingRewards = questManager.checkQuestsAndCollect(numbers, player);
         GameLog.add("Damage = " + damage);
 
         updateGridDisplay();
@@ -657,13 +649,10 @@ public class GameUI extends JPanel implements TurnListener {
         // =========================
         // ⭐ USE ITEM (ATTACK ONLY)
         // =========================
-        if (selectedItem != null && player.getItemManager().getItems().contains(selectedItem)) {
-            GameLog.add("Used item: " + selectedItem.getName());
-            player.getItemManager().useItem(selectedItem, currentBoss);
+        pendingItem = selectedItem;
+        selectedItem = null;
+        selectedSlot = null;
 
-            selectedItem = null;
-            selectedSlot = null;
-        }
         // ===== PLAY ANIMATION =====
         if (combo.isHitBoss() || combo.isHitSelf()) {
             animator.playerAttack(() -> {
@@ -675,11 +664,19 @@ public class GameUI extends JPanel implements TurnListener {
                     if (combo.isHitSelf()) {
                         player.takeDamage(combo.getDamage());
                         GameLog.add("You hit yourself!");
-                    } else if (combo.isHitBoss()) {
+                    } else if(combo.isHitBoss()){
+                        if(pendingItem != null &&
+                        player.getItemManager().getItems().contains(pendingItem)){
+                            GameLog.add("Used item: " + pendingItem.getName());
+                            player.getItemManager().useItem(pendingItem, currentBoss);
+                            pendingItem = null;
+                        }
                         turnManager.playerAttack(combo.getDamage());
-                    } else {
+                    }    
+                    else {
                         GameLog.add("Attack Miss!");
                         turnManager.playerTurnFinished();
+                        pendingItem = null;
                     }
 
                     bossHpBar.setValue(turnManager.getBoss().getCurrentHp());
@@ -687,6 +684,8 @@ public class GameUI extends JPanel implements TurnListener {
 
                     // ⭐⭐⭐ ADD THIS ⭐⭐⭐
                     refreshInventory(); // ← sync UI หลัง item ถูก remove จริง
+
+                    if(!pendingRewards.isEmpty()){handleQuestRewards(pendingRewards);}
 
                     isAnimating = false;
 
@@ -875,7 +874,9 @@ public class GameUI extends JPanel implements TurnListener {
 
     @Override
     public void onPlayerTurn() {
-
+        selectedItem = null;
+        selectedSlot = null;
+        pendingItem = null;
         System.out.println("PLAYER TURN");
 
         isAnimating = false;

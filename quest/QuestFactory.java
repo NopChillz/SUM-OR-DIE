@@ -20,281 +20,273 @@ public class QuestFactory {
     // ⚔️ โจมตี
     // =========================
 
-    public static Quest soulHunter(){
+    public static Quest soulHunter() {
         return new Quest(
-            "Soul Hunter",
-            "โจมตีแล้วสะสม Soul Stack ครบ 3 ครั้ง → การโจมตีถัดไปแรง x2",
-            """
-            • เลือก 3 ช่อง
-            • ผลรวม = 15
-            • ต้องมีเลขคี่อย่างน้อย 1 ช่อง
-            """,
-            (numbers, player) -> {
+                "Soul Hunter",
+                "โจมตีแล้วสะสม Soul Stack ครบ 3 ครั้ง → การโจมตีถัดไปแรง x2",
+                """
+                        • เลือก 3 ช่อง
+                        • ผลรวม = 15
+                        • ต้องมีเลขคี่อย่างน้อย 1 ช่อง
+                        """,
+                (numbers, player) -> {
 
-                if(numbers.size()!=3) return false;
+                    if (numbers.size() != 3)
+                        return false;
 
-                int sum = numbers.stream().mapToInt(i->i).sum();
-                boolean hasOdd = numbers.stream().anyMatch(n->n%2==1);
+                    int sum = numbers.stream().mapToInt(i -> i).sum();
+                    boolean hasOdd = numbers.stream().anyMatch(n -> n % 2 == 1);
 
-                return sum == 15 && hasOdd;
-            },
-            () -> new SoulHunter(), true
-        );
+                    return sum == 15 && hasOdd;
+                },
+                () -> new SoulHunter(), true);
     }
 
-    public static Quest breakerAxe(){
+    public static Quest breakerAxe() {
         return new Quest(
-            "Breaker Axe",
-            "มีโอกาสติดคริติคอล 20% (ดาเมจ x1.5)",
-            """
-            • เลือก 2 ช่อง
-            • ผลรวมระหว่าง 10–14
-            • มีเลข ≥ 7 อย่างน้อย 1 ช่อง
-            """,
-            (numbers, player)->{
+                "Breaker Axe",
+                "มีโอกาสติดคริติคอล 20% (ดาเมจ x1.5)",
+                """
+                        • เลือก 2 ช่อง
+                        • ผลรวมระหว่าง 10–14
+                        • มีเลข ≥ 7 อย่างน้อย 1 ช่อง
+                        """,
+                (numbers, player) -> {
 
-                if(numbers.size()!=2) return false;
+                    if (numbers.size() != 2)
+                        return false;
 
-                int sum = numbers.stream().mapToInt(i->i).sum();
-                boolean high = numbers.stream().anyMatch(n->n>=7);
+                    int sum = numbers.stream().mapToInt(i -> i).sum();
+                    boolean high = numbers.stream().anyMatch(n -> n >= 7);
 
-                return sum>=10 && sum<=14 && high;
-            },
-            () -> new BreakerAxe(), true
-        );
+                    return sum >= 10 && sum <= 14 && high;
+                },
+                () -> new BreakerAxe(), true);
     }
 
-    public static Quest venomDagger(){
+    public static Quest venomDagger() {
         return new Quest(
-            "Venom Dagger",
-            "ทำให้ศัตรูติดพิษ 3 เทิร์น",
-            """
-            • เลือก 3 ช่อง
-            • ต้องมีตัวเลขซ้ำ
-            • ผลรวม ≤ 12
-            """,
-            (numbers, player)->{
+                "Venom Dagger",
+                "ทำให้ศัตรูติดพิษ 3 เทิร์น",
+                """
+                        • เลือก 3 ช่อง
+                        • ต้องมีตัวเลขซ้ำ
+                        • ผลรวม ≤ 12
+                        """,
+                (numbers, player) -> {
 
-                if(numbers.size()!=3) return false;
+                    if (numbers.size() != 3)
+                        return false;
 
-                int sum = numbers.stream().mapToInt(i->i).sum();
-                boolean dup = numbers.stream().distinct().count()<3;
+                    int sum = numbers.stream().mapToInt(i -> i).sum();
+                    boolean dup = numbers.stream().distinct().count() < 3;
 
-                return dup && sum<=12;
-            },
-            () -> new VenomDagger(), true
-        );
+                    return dup && sum <= 12;
+                },
+                () -> new VenomDagger(), true);
     }
 
     // =========================
     // 🛡 ป้องกัน
     // =========================
 
-    public static Quest mirrorShield(){
+    public static Quest mirrorShield() {
         return new Quest(
-            "Mirror Shield",
-            "มีโอกาสสะท้อนดาเมจ 15%",
-            """
-            • เลือก 3 ช่อง
-            • ตัวเลขเรียงติดกัน
-            • ผลรวม ≥ 12
-            """,
-            (numbers, player)->{
+                "Mirror Shield",
+                "มีโอกาสสะท้อนดาเมจ 15%",
+                """
+                        • เลือก 3 ช่อง
+                        • ตัวเลขเรียงติดกัน
+                        • ผลรวม ≥ 12
+                        """,
+                (numbers, player) -> {
 
-                if(numbers.size()!=3) return false;
+                    if (numbers.size() != 3)
+                        return false;
 
-                numbers.sort(Integer::compareTo);
+                    numbers.sort(Integer::compareTo);
 
-                boolean consecutive =
-                        numbers.get(1)==numbers.get(0)+1 &&
-                        numbers.get(2)==numbers.get(1)+1;
+                    boolean consecutive = numbers.get(1) == numbers.get(0) + 1 &&
+                            numbers.get(2) == numbers.get(1) + 1;
 
-                int sum = numbers.stream().mapToInt(i->i).sum();
+                    int sum = numbers.stream().mapToInt(i -> i).sum();
 
-                return consecutive && sum>=12;
-            },
-            () -> new MirrorShield(), true
-        );
+                    return consecutive && sum >= 12;
+                },
+                () -> new MirrorShield(), true);
     }
 
-    public static Quest titaniumPlate(){
+    public static Quest titaniumPlate() {
         return new Quest(
-            "Titanium Plate",
-            "ลดดาเมจที่ได้รับ 20% เป็นเวลา 2 เทิร์น",
-            """
-            • เลือกเลขคู่ 3 ช่อง
-            • ผลรวม ≥ 12
-            """,
-            (numbers, player)->{
+                "Titanium Plate",
+                "ลดดาเมจที่ได้รับ 20% เป็นเวลา 2 เทิร์น",
+                """
+                        • เลือกเลขคู่ 3 ช่อง
+                        • ผลรวม ≥ 12
+                        """,
+                (numbers, player) -> {
 
-                if(numbers.size()!=3) return false;
+                    if (numbers.size() != 3)
+                        return false;
 
-                boolean allEven =
-                        numbers.stream().allMatch(n->n%2==0);
+                    boolean allEven = numbers.stream().allMatch(n -> n % 2 == 0);
 
-                int sum = numbers.stream().mapToInt(i->i).sum();
+                    int sum = numbers.stream().mapToInt(i -> i).sum();
 
-                return allEven && sum>=12;
-            },
-            () -> new TitaniumPlate(), true
-        );
+                    return allEven && sum >= 12;
+                },
+                () -> new TitaniumPlate(), true);
     }
 
-    public static Quest steadfastHelm(){
+    public static Quest steadfastHelm() {
         return new Quest(
-            "Steadfast Helm",
-            "ลดระยะเวลาของสถานะผิดปกติ",
-            """
-            • เลือก 2 ช่อง
-            • ผลรวม = 10
-            """,
-            (numbers, player)->{
+                "Steadfast Helm",
+                "ลดระยะเวลาของสถานะผิดปกติ",
+                """
+                        • เลือก 2 ช่อง
+                        • ผลรวม = 10
+                        """,
+                (numbers, player) -> {
 
-                if(numbers.size()!=2) return false;
+                    if (numbers.size() != 2)
+                        return false;
 
-                int sum = numbers.stream().mapToInt(i->i).sum();
-                return sum==10;
-            },
-            () -> new SteadfastHelm(), true
-        );
+                    int sum = numbers.stream().mapToInt(i -> i).sum();
+                    return sum == 10;
+                },
+                () -> new SteadfastHelm(), true);
     }
 
     // =========================
     // 💖 ฟื้นฟู
     // =========================
 
-    public static Quest spiritFruit(){
+    public static Quest spiritFruit() {
         return new Quest(
-            "Spirit Fruit",
-            "ฟื้นฟู HP 10% ต่อเทิร์น เป็นเวลา 3 เทิร์น",
-            """
-            • เลือก 3 ช่อง
-            • ผลรวม ≤ 9
-            """,
-            (numbers, player)->{
+                "Spirit Fruit",
+                "ฟื้นฟู HP 10% ต่อเทิร์น เป็นเวลา 3 เทิร์น",
+                """
+                        • เลือก 3 ช่อง
+                        • ผลรวม ≤ 9
+                        """,
+                (numbers, player) -> {
 
-                if(numbers.size()!=3) return false;
+                    if (numbers.size() != 3)
+                        return false;
 
-                int sum = numbers.stream().mapToInt(i->i).sum();
-                return sum<=9;
-            },
-            () -> new SpiritFruit(), true
-        );
+                    int sum = numbers.stream().mapToInt(i -> i).sum();
+                    return sum <= 9;
+                },
+                () -> new SpiritFruit(), true);
     }
 
-    public static Quest grandPotion(){
+    public static Quest grandPotion() {
         return new Quest(
-            "Grand Potion",
-            "ฟื้นฟู HP ทันที 50%",
-            """
-            • เลือก 3 ช่อง
-            • ผลรวม = 12
-            """,
-            (numbers, player)->{
+                "Grand Potion",
+                "ฟื้นฟู HP ทันที 50%",
+                """
+                        • เลือก 3 ช่อง
+                        • ผลรวม = 12
+                        """,
+                (numbers, player) -> {
 
-                if(numbers.size()!=3) return false;
+                    if (numbers.size() != 3)
+                        return false;
 
-                int sum = numbers.stream().mapToInt(i->i).sum();
-                return sum==12;
-            },
-            () -> new GrandPotion(), true
-        );
+                    int sum = numbers.stream().mapToInt(i -> i).sum();
+                    return sum == 12;
+                },
+                () -> new GrandPotion(), true);
     }
 
-    public static Quest phoenixOrb(){
+    public static Quest phoenixOrb() {
         return new Quest(
-            "Phoenix Orb",
-            "ฟื้นคืนชีพ 1 ครั้ง ที่ 20% HP",
-            """
-            • เลือกเลขเหมือนกัน 3 ช่อง
-            • ผลรวม ≥ 9
-            """,
-            (numbers, player)->{
+                "Phoenix Orb",
+                "ฟื้นคืนชีพ 1 ครั้ง ที่ 20% HP",
+                """
+                        • เลือกเลขเหมือนกัน 3 ช่อง
+                        • ผลรวม ≥ 9
+                        """,
+                (numbers, player) -> {
 
-                if(numbers.size()!=3) return false;
+                    if (numbers.size() != 3)
+                        return false;
 
-                boolean same =
-                        numbers.get(0).equals(numbers.get(1)) &&
-                        numbers.get(1).equals(numbers.get(2));
+                    boolean same = numbers.get(0).equals(numbers.get(1)) &&
+                            numbers.get(1).equals(numbers.get(2));
 
-                int sum = numbers.stream().mapToInt(i->i).sum();
+                    int sum = numbers.stream().mapToInt(i -> i).sum();
 
-                return same && sum>=9;
-            },
-            () -> new PhoenixOrb(), true
-        );
+                    return same && sum >= 9;
+                },
+                () -> new PhoenixOrb(), true);
     }
 
     // =========================
     // 🔮 บัฟ
     // =========================
 
-    public static Quest powerElixir(){
+    public static Quest powerElixir() {
         return new Quest(
-            "Power Elixir",
-            "เพิ่มพลังโจมตี 30%",
-            """
-            • เลือก 3 ช่อง
-            • ผลรวมระหว่าง 13–15
-            • ห้ามมีเลขซ้ำ
-            """,
-            (numbers, player)->{
+                "Power Elixir",
+                "เพิ่มพลังโจมตี 30%",
+                """
+                        • เลือก 3 ช่อง
+                        • ผลรวมระหว่าง 13–15
+                        • ห้ามมีเลขซ้ำ
+                        """,
+                (numbers, player) -> {
 
-                if(numbers.size()!=3) return false;
+                    if (numbers.size() != 3)
+                        return false;
 
-                int sum = numbers.stream().mapToInt(i->i).sum();
-                boolean noDup =
-                        numbers.stream().distinct().count()==3;
+                    int sum = numbers.stream().mapToInt(i -> i).sum();
+                    boolean noDup = numbers.stream().distinct().count() == 3;
 
-                return sum>=13 && sum<=15 && noDup;
-            },
-            () -> new PowerElixir(), true
-        );
+                    return sum >= 13 && sum <= 15 && noDup;
+                },
+                () -> new PowerElixir(), true);
     }
 
-    public static Quest timeSand(){
+    public static Quest timeSand() {
         return new Quest(
-            "Time Sand",
-            "มีโอกาสได้เทิร์นเพิ่ม 30%",
-            """
-            • เลือกเลขจำนวนเฉพาะ (2,3,5,7)
-            • ผลรวม ≥ 11
-            """,
-            (numbers, player)->{
+                "Time Sand",
+                "มีโอกาสได้เทิร์นเพิ่ม 30%",
+                """
+                        • เลือกเลขจำนวนเฉพาะ (2,3,5,7)
+                        • ผลรวม ≥ 11
+                        """,
+                (numbers, player) -> {
 
-                if(numbers.size()!=3) return false;
+                    if (numbers.size() != 3)
+                        return false;
 
-                List<Integer> primes = List.of(2,3,5,7);
+                    List<Integer> primes = List.of(2, 3, 5, 7);
 
-                boolean allPrime =
-                        numbers.stream().allMatch(primes::contains);
+                    boolean allPrime = numbers.stream().allMatch(primes::contains);
 
-                int sum = numbers.stream().mapToInt(i->i).sum();
+                    int sum = numbers.stream().mapToInt(i -> i).sum();
 
-                return allPrime && sum>=11;
-            },
-            () -> new TimeSand(), true
-        );
+                    return allPrime && sum >= 11;
+                },
+                () -> new TimeSand(), true);
     }
 
-    public static Quest warHorn(){
+    public static Quest warHorn() {
         return new Quest(
-            "War Horn",
-            "เพิ่มพลังโจมตีและป้องกัน 15%",
-            """
-            • เลือก 3 ช่อง
-            • ต้องมีเลข ≥ 6 อย่างน้อย 2 ช่อง
-            """,
-            (numbers, player)->{
+                "War Horn",
+                "เพิ่มพลังโจมตีและป้องกัน 15%",
+                """
+                        • เลือก 3 ช่อง
+                        • ต้องมีเลข ≥ 6 อย่างน้อย 2 ช่อง
+                        """,
+                (numbers, player) -> {
+                    if (numbers.size() != 3)
+                        return false;
+                    long count = numbers.stream().filter(n -> n >= 6).count();
 
-                if(numbers.size()!=3) return false;
-
-                long count =
-                        numbers.stream().filter(n->n>=6).count();
-
-                return count>=2;
-            },
-            () -> new WarHorn(), true
-        );
+                    return count >= 2;
+                },
+                () -> new WarHorn(), true);
     }
 }

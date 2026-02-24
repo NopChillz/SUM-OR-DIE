@@ -16,7 +16,7 @@ public class MainFrame extends JFrame {
     // =================================================
     public MainFrame() {
 
-        setTitle("SUM OR DIE");
+        setTitle("Game");
         setSize(1280, 720);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setResizable(false);
